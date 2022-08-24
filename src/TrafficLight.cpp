@@ -36,11 +36,13 @@ void TrafficLight::waitForGreen()
     // Once it receives TrafficLightPhase::green, the method returns.
 }
 
+// get the traffic light's _currentPhase private member variable
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
     return _currentPhase;
 }
 
+// set the traffic light's _currentPhase private member variable
 void TrafficLight::setCurrentPhase(TrafficLightPhase phase)
 {
     _currentPhase = phase;

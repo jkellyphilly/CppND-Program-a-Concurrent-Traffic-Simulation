@@ -56,6 +56,7 @@ private:
 
     std::condition_variable _condition;
     std::mutex _mutex;
+    // private member variable that gives the traffic light's phase
     TrafficLightPhase _currentPhase;
 };
 
