@@ -22,8 +22,16 @@ class MessageQueue
 {
 public:
 
+void send (T &&phase); // rvalue reference of phase
+T receive(); // will return rvalue reference of phase
+// dequeue storing objects of type TrafficLightPhase
+std::deque<TrafficLightPhase> _queue;
+
 private:
-    
+
+std::condition_variable _condition;
+std::mutex _mtx;
+
 };
 
 // FP.1 : Define a class „TrafficLight“ which is a child class of TrafficObject. 
