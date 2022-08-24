@@ -13,6 +13,16 @@ T MessageQueue<T>::receive()
     // FP.5a : The method receive should use std::unique_lock<std::mutex> and _condition.wait() 
     // to wait for and receive new messages and pull them from the queue using move semantics. 
     // The received object should then be returned by the receive function. 
+    std::unique_lock<std::mutex> unique_lck(_mtx);
+
+    // one-liner from learning examples
+    // pass the unique lock to the condition variable
+    _condition.wait(unique_lck, [this] { return !_queue.empty(); });
+
+    // pull message from front of the queue
+    TrafficLightPhase phase = std::move(_queue.front());
+    
+    return phase;
 }
 
 template <typename T>
