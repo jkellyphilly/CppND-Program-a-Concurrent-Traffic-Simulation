@@ -1,6 +1,8 @@
 #include <iostream>
 #include <random>
 #include "TrafficLight.h"
+#include <chrono>
+#include <thread>
 
 /* Implementation of class "MessageQueue" */
 
@@ -60,5 +62,39 @@ void TrafficLight::cycleThroughPhases()
     // and toggles the current phase of the traffic light between red and green and sends an update method 
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
+
+    // I googled for methods to generate a random number, and I found this StackOverflow answer that was 
+    // quite helpful at introducing some new concepts for unbiased random selection between values.
+    // Reference: https://stackoverflow.com/questions/12657962/how-do-i-generate-a-random-number-between-two-variables-that-i-have-stored
+    std::random_device seed;
+    std::mt19937 rand_gen(seed());
+    std::uniform_int_distribution<int> rand_distr(4000, 6000);
+
+    // infinite while loop
+    while (true)
+    {
+        // sleep between 4 and 6 seconds and change traffic light phase to opposite (i.e. red --> green)
+        std::this_thread::sleep_for(std::chrono::milliseconds(rand_distr(rand_gen)));
+
+        if (_currentPhase == red)
+        {
+            // set the TL phase to green
+            setCurrentPhase(green);
+        }
+        else if (_currentPhase == green)
+        {
+            // set the TL phase to red
+            setCurrentPhase(red);
+        }
+        else
+        {
+            // phases are not allowed to be neither green nor red - throw exception
+            throw std::invalid_argument("TrafficLightPhase can only be red or green!");
+        }
+        
+        // sleep for 1ms as per directions for rubric
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    
 }
 
