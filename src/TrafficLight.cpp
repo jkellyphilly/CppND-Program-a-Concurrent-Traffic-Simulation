@@ -6,7 +6,7 @@
 
 /* Implementation of class "MessageQueue" */
 
-/* 
+
 template <typename T>
 T MessageQueue<T>::receive()
 {
@@ -20,8 +20,14 @@ void MessageQueue<T>::send(T &&msg)
 {
     // FP.4a : The method send should use the mechanisms std::lock_guard<std::mutex> 
     // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
+
+    std::lock_guard<std::mutex> lock_grd(_mtx);
+
+    // emplace back for the TL phase msg
+    _queue.emplace_back(msg);
+    _condition.notify_one();
 }
-*/
+
 
 /* Implementation of class "TrafficLight" */
 
@@ -90,7 +96,8 @@ void TrafficLight::cycleThroughPhases()
         
         // sleep for 1ms as per directions for rubric
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    
+
+        // use move semantics to send rvalue reference of this TrafficLight's phase to the message queue
+        _message_queue.send(std::move(TrafficLight::getCurrentPhase()));
 }
 
